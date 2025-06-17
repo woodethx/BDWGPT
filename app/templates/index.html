@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="clearfix">
+    {% for status in statuses %}
+    <div class="column">
+        <h3>{{ status }}</h3>
+        {% for order in orders if order.status == status %}
+            <div class="order">
+                <a href="{{ url_for('main.view_order', order_id=order.id) }}">Order {{ order.id }} - {{ order.customer }}</a>
+                <form action="{{ url_for('main.move_order', order_id=order.id) }}" method="post">
+                    <select name="status" onchange="this.form.submit()">
+                        {% for s in statuses %}
+                        <option value="{{ s }}" {% if s == order.status %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

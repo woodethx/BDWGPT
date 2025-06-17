@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Order {{ order.id }} - {{ order.customer }}</h2>
+<p>Status: {{ order.status }}</p>
+<a href="{{ url_for('main.index') }}">Back to board</a>
+
+{% for system in order.systems %}
+    <h3>{{ system.name }} {% if system.serial_number %}({{ system.serial_number }}){% endif %}</h3>
+    <ul>
+    {% for item in system.checklist_items %}
+        <li>
+            <form action="{{ url_for('main.check_item', system_id=system.id) }}" method="post" style="display:inline;">
+                <input type="hidden" name="item_id" value="{{ item.id }}">
+                <button name="action" value="complete" type="submit">{% if item.completed %}✔{% else %}✗{% endif %}</button>
+                {{ item.description }}
+            </form>
+            <form action="{{ url_for('main.check_item', system_id=system.id) }}" method="post" style="display:inline;">
+                <input type="hidden" name="item_id" value="{{ item.id }}">
+                <button name="action" value="qa" type="submit">QA {% if item.qa_checked %}✔{% else %}✗{% endif %}</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% endfor %}
+{% endblock %}
